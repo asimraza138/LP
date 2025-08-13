@@ -49,6 +49,7 @@
             <li><a href="#features">Features</a></li>
             <li><a href="#testimonials">Reviews</a></li>
             <li><a href="#faq">FAQ</a></li>
+            <li><a href="#query">Query</a></li>
             <li class="hide-on-mobile">
               <a class="btn btn-ghost" href="#download">Get App</a>
             </li>
@@ -321,6 +322,65 @@
           </div>
         </div>
       </section>
+
+      <section id="query" class="section">
+        <div class="container">
+          <h2 class="section-title">Have a device question?</h2>
+          <p class="section-subtitle">
+            Ask about any device — we’ll get back to you.
+          </p>
+          <div class="query-card">
+            <form id="query-form" class="query-form" novalidate>
+              <div class="field">
+                <label for="q_name">Name</label>
+                <input
+                  id="q_name"
+                  name="name"
+                  type="text"
+                  placeholder="Your name"
+                  required
+                />
+              </div>
+              <div class="field">
+                <label for="q_email">Email</label>
+                <input
+                  id="q_email"
+                  name="email"
+                  type="email"
+                  inputmode="email"
+                  placeholder="you@example.com"
+                  required
+                />
+              </div>
+              <div class="field">
+                <label for="q_device">Device</label>
+                <input
+                  id="q_device"
+                  name="device"
+                  type="text"
+                  placeholder="e.g., iPhone 15, Galaxy S24"
+                  required
+                />
+              </div>
+              <div class="field field-col-span">
+                <label for="q_message">Your question</label>
+                <textarea
+                  id="q_message"
+                  name="message"
+                  rows="4"
+                  placeholder="Write your question here..."
+                  required
+                ></textarea>
+              </div>
+              <div class="actions">
+                <button class="btn btn-primary" type="submit">
+                  Send query
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
     </main>
 
     <footer class="site-footer">
@@ -372,6 +432,40 @@
         </button>
         <div class="demo-video-frame">
           <div class="video-placeholder">Demo Video</div>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog
+      class="promo-dialog"
+      data-promo-dialog
+      aria-label="Independence Day Offer"
+    >
+      <div class="promo-card">
+        <button class="icon-btn" data-close-promo aria-label="Close">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M6 6l12 12M18 6L6 18"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+        <div class="promo-content">
+          <span class="badge badge-amber">Limited time</span>
+          <h3>Independence Day Offer</h3>
+          <p>
+            Celebrate with <strong>20% off</strong> on all devices till
+            <strong>14 August</strong>.
+          </p>
+          <a class="btn btn-primary" href="#features">Explore devices</a>
         </div>
       </div>
     </dialog>

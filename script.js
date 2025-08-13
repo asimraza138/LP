@@ -104,4 +104,64 @@
     openDemoBtn.addEventListener("click", () => demoDialog.showModal());
     closeDemoBtn.addEventListener("click", () => demoDialog.close());
   }
+
+  // Promo dialog: Independence Day offer until 14 August
+  const promoDialog = document.querySelector("[data-promo-dialog]");
+  const closePromoBtn = document.querySelector("[data-close-promo]");
+  try {
+    if (promoDialog instanceof HTMLDialogElement) {
+      const today = new Date();
+      const year = today.getFullYear();
+      const offerEnd = new Date(year, 7, 14, 23, 59, 59);
+      const hasSeenKey = `promo_seen_${year}`;
+      const shouldShow = today <= offerEnd && !localStorage.getItem(hasSeenKey);
+      if (shouldShow) {
+        setTimeout(() => promoDialog.showModal(), 350);
+      }
+      if (closePromoBtn) {
+        closePromoBtn.addEventListener("click", () => {
+          localStorage.setItem(hasSeenKey, "1");
+          promoDialog.close();
+        });
+      }
+    }
+  } catch (_) {}
+
+  // Query form submission
+  const qForm = document.getElementById("query-form");
+  if (qForm) {
+    qForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = /** @type {HTMLInputElement} */ (document.getElementById("q_name"))?.value.trim();
+      const email = /** @type {HTMLInputElement} */ (document.getElementById("q_email"))?.value.trim();
+      const device = /** @type {HTMLInputElement} */ (document.getElementById("q_device"))?.value.trim();
+      const message = /** @type {HTMLTextAreaElement} */ (document.getElementById("q_message"))?.value.trim();
+      if (!name || !email || !device || !message || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showToast("Please complete all fields with a valid email.", true);
+        return;
+      }
+      const btn = qForm.querySelector("button");
+      try {
+        if (btn) {
+          btn.disabled = true;
+          btn.textContent = "Sending…";
+        }
+        const res = await fetch("/api/queries", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, device, message })
+        });
+        if (!res.ok) throw new Error("Bad response");
+        qForm.reset();
+        showToast("Query sent! We'll reach out soon.");
+      } catch (err) {
+        showToast("Could not send. Please try again.", true);
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = "Send query";
+        }
+      }
+    });
+  }
 })();

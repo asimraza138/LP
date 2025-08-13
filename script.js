@@ -132,11 +132,25 @@
   if (qForm) {
     qForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const name = /** @type {HTMLInputElement} */ (document.getElementById("q_name"))?.value.trim();
-      const email = /** @type {HTMLInputElement} */ (document.getElementById("q_email"))?.value.trim();
-      const device = /** @type {HTMLInputElement} */ (document.getElementById("q_device"))?.value.trim();
-      const message = /** @type {HTMLTextAreaElement} */ (document.getElementById("q_message"))?.value.trim();
-      if (!name || !email || !device || !message || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      const name = /** @type {HTMLInputElement} */ (
+        document.getElementById("q_name")
+      )?.value.trim();
+      const email = /** @type {HTMLInputElement} */ (
+        document.getElementById("q_email")
+      )?.value.trim();
+      const device = /** @type {HTMLInputElement} */ (
+        document.getElementById("q_device")
+      )?.value.trim();
+      const message = /** @type {HTMLTextAreaElement} */ (
+        document.getElementById("q_message")
+      )?.value.trim();
+      if (
+        !name ||
+        !email ||
+        !device ||
+        !message ||
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+      ) {
         showToast("Please complete all fields with a valid email.", true);
         return;
       }
@@ -149,7 +163,7 @@
         const res = await fetch("/api/queries", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, email, device, message })
+          body: JSON.stringify({ name, email, device, message }),
         });
         if (!res.ok) throw new Error("Bad response");
         qForm.reset();

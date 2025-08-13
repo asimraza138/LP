@@ -131,6 +131,13 @@
   const qForm = document.getElementById("query-form");
   const apiBaseMeta = document.querySelector('meta[name="api-base"]');
   let API_BASE = (apiBaseMeta && apiBaseMeta.getAttribute("content")) || "";
+  const fb = {
+    apiKey: (document.querySelector('meta[name="firebase-apiKey"]')?.getAttribute('content') || '').trim(),
+    authDomain: (document.querySelector('meta[name="firebase-authDomain"]')?.getAttribute('content') || '').trim(),
+    projectId: (document.querySelector('meta[name="firebase-projectId"]')?.getAttribute('content') || '').trim(),
+    appId: (document.querySelector('meta[name="firebase-appId"]')?.getAttribute('content') || '').trim(),
+  };
+  const hasFirebase = fb.apiKey && fb.projectId && fb.appId;
   try {
     const url = new URL(window.location.href);
     const qp = url.searchParams.get("api");
@@ -174,13 +181,27 @@
           btn.disabled = true;
           btn.textContent = "Sending…";
         }
-        const endpoint = `${API_BASE}/api/queries`;
-        const res = await fetch(endpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, email, device, message }),
-        });
-        if (!res.ok) throw new Error("Bad response");
+        if (API_BASE) {
+          const endpoint = `${API_BASE}/api/queries`;
+          const res = await fetch(endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, email, device, message }),
+          });
+          if (!res.ok) throw new Error("Bad response");
+        } else if (hasFirebase) {
+          // Lazy-load Firebase from CDN and write to Firestore
+          // No auth; public write is not recommended for production — use security rules
+          await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js');
+          await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
+          // @ts-ignore
+          const app = firebase.initializeApp(fb);
+          // @ts-ignore
+          const db = firebase.firestore();
+          await db.collection('queries').add({ name, email, device, message, created_at: new Date().toISOString() });
+        } else {
+          throw new Error("No API configured");
+        }
         qForm.reset();
         showToast("Query sent! We'll reach out soon.");
       } catch (err) {

@@ -9,6 +9,7 @@
     "dev": "nodemon --watch server.js --watch index.html --watch styles.css --watch script.js server.js"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.19.2",
     "sqlite3": "^5.1.7"
   },

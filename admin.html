@@ -6,65 +6,130 @@
     <title>Admin · Device Queries</title>
     <link rel="stylesheet" href="./styles.css" />
     <style>
-      .admin-wrap { width: min(92vw, 1000px); margin: 2rem auto; }
-      .admin-head { display:flex; justify-content: space-between; align-items: center; margin-bottom: .75rem; }
-      .admin-head input { width: 340px; height: 40px; border-radius: 10px; border: 1px solid var(--border); background: #0b1320; color: var(--text); padding: 0 .75rem; }
-      table { width: 100%; border-collapse: collapse; background: var(--glass); border:1px solid var(--border); border-radius: 12px; overflow: hidden; }
-      th, td { text-align: left; padding: .6rem .7rem; border-bottom: 1px solid var(--border); vertical-align: top; }
-      th { color: var(--muted); font-weight: 600; }
-      tbody tr:hover { background: rgba(255,255,255,.03); }
-      .mini { margin-top: .75rem; }
+      .admin-wrap {
+        width: min(92vw, 1000px);
+        margin: 2rem auto;
+      }
+      .admin-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.75rem;
+      }
+      .admin-head input {
+        width: 340px;
+        height: 40px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: #0b1320;
+        color: var(--text);
+        padding: 0 0.75rem;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: var(--glass);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 0.6rem 0.7rem;
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+      }
+      th {
+        color: var(--muted);
+        font-weight: 600;
+      }
+      tbody tr:hover {
+        background: rgba(255, 255, 255, 0.03);
+      }
+      .mini {
+        margin-top: 0.75rem;
+      }
     </style>
   </head>
   <body>
     <div class="admin-wrap">
       <div class="admin-head">
         <h2>Device queries</h2>
-        <input id="adminToken" type="password" placeholder="x-admin-token (optional)" />
+        <input
+          id="adminToken"
+          type="password"
+          placeholder="x-admin-token (optional)"
+        />
       </div>
       <table>
         <thead>
           <tr>
-            <th style="width:64px">ID</th>
-            <th style="width:180px">Name / Email</th>
-            <th style="width:160px">Device</th>
+            <th style="width: 64px">ID</th>
+            <th style="width: 180px">Name / Email</th>
+            <th style="width: 160px">Device</th>
             <th>Message</th>
-            <th style="width:170px">Created</th>
+            <th style="width: 170px">Created</th>
           </tr>
         </thead>
-        <tbody id="rows"><tr><td colspan="5">Loading…</td></tr></tbody>
+        <tbody id="rows">
+          <tr>
+            <td colspan="5">Loading…</td>
+          </tr>
+        </tbody>
       </table>
-      <p class="mini">Tip: set environment variable ADMIN_TOKEN on your server and paste it above to view.</p>
+      <p class="mini">
+        Tip: set environment variable ADMIN_TOKEN on your server and paste it
+        above to view.
+      </p>
     </div>
     <script>
       async function load() {
-        const token = document.getElementById('adminToken').value.trim();
-        const headers = token ? { 'x-admin-token': token } : {};
-        const res = await fetch('/api/queries?limit=200', { headers });
+        const token = document.getElementById("adminToken").value.trim();
+        const headers = token ? { "x-admin-token": token } : {};
+        const res = await fetch("/api/queries?limit=200", { headers });
         const body = await res.json();
-        const rows = document.getElementById('rows');
-        rows.innerHTML = '';
+        const rows = document.getElementById("rows");
+        rows.innerHTML = "";
         if (!res.ok) {
-          rows.innerHTML = `<tr><td colspan="5">${body.error || 'Unauthorized'}</td></tr>`;
+          rows.innerHTML = `<tr><td colspan="5">${
+            body.error || "Unauthorized"
+          }</td></tr>`;
           return;
         }
         for (const q of body.items) {
-          const tr = document.createElement('tr');
+          const tr = document.createElement("tr");
           tr.innerHTML = `
             <td>#${q.id}</td>
-            <td><strong>${escapeHtml(q.name)}</strong><br/><span class="mini">${escapeHtml(q.email)}</span></td>
+            <td><strong>${escapeHtml(
+              q.name
+            )}</strong><br/><span class="mini">${escapeHtml(
+            q.email
+          )}</span></td>
             <td>${escapeHtml(q.device)}</td>
             <td>${escapeHtml(q.message)}</td>
-            <td><span class="mini">${new Date(q.created_at).toLocaleString()}</span></td>
+            <td><span class="mini">${new Date(
+              q.created_at
+            ).toLocaleString()}</span></td>
           `;
           rows.appendChild(tr);
         }
       }
-      function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]))}
-      document.getElementById('adminToken').addEventListener('change', load);
+      function escapeHtml(s) {
+        return String(s).replace(
+          /[&<>"']/g,
+          (c) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            }[c])
+        );
+      }
+      document.getElementById("adminToken").addEventListener("change", load);
       load();
     </script>
   </body>
-  </html>
-
-
+</html>

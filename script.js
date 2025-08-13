@@ -129,6 +129,8 @@
 
   // Query form submission
   const qForm = document.getElementById("query-form");
+  const apiBaseMeta = document.querySelector('meta[name="api-base"]');
+  const API_BASE = (apiBaseMeta && apiBaseMeta.getAttribute('content')) || '';
   if (qForm) {
     qForm.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -160,7 +162,7 @@
           btn.disabled = true;
           btn.textContent = "Sending…";
         }
-        const res = await fetch("/api/queries", {
+        const res = await fetch(`${API_BASE}/api/queries`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ name, email, device, message }),

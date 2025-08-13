@@ -2,6 +2,7 @@
 const path = require("path");
 const fs = require("fs");
 const express = require("express");
+const cors = require("cors");
 const sqlite3 = require("sqlite3").verbose();
 
 const app = express();
@@ -30,6 +31,18 @@ db.serialize(() => {
 });
 
 app.use(express.json());
+// CORS for GitHub Pages and local dev
+app.use(
+  cors({
+    origin: [
+      /http:\/\/localhost(?::\d+)?$/,
+      "https://asimraza138.github.io",
+    ],
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "x-admin-token"],
+    credentials: false,
+  })
+);
 
 // Static files (serve the landing page from this directory)
 app.use(express.static(__dirname));

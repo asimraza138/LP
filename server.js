@@ -34,10 +34,7 @@ app.use(express.json());
 // CORS for GitHub Pages and local dev
 app.use(
   cors({
-    origin: [
-      /http:\/\/localhost(?::\d+)?$/,
-      "https://asimraza138.github.io",
-    ],
+    origin: [/http:\/\/localhost(?::\d+)?$/, "https://asimraza138.github.io"],
     methods: ["GET", "POST", "OPTIONS"],
     allowedHeaders: ["Content-Type", "x-admin-token"],
     credentials: false,

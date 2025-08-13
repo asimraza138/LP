@@ -130,7 +130,19 @@
   // Query form submission
   const qForm = document.getElementById("query-form");
   const apiBaseMeta = document.querySelector('meta[name="api-base"]');
-  const API_BASE = (apiBaseMeta && apiBaseMeta.getAttribute('content')) || '';
+  let API_BASE = (apiBaseMeta && apiBaseMeta.getAttribute("content")) || "";
+  try {
+    const url = new URL(window.location.href);
+    const qp = url.searchParams.get("api");
+    if (qp) {
+      const cleaned = qp.replace(/\/$/, "");
+      localStorage.setItem("api_base", cleaned);
+      API_BASE = cleaned;
+    } else if (!API_BASE) {
+      const stored = localStorage.getItem("api_base");
+      if (stored) API_BASE = stored;
+    }
+  } catch (_) {}
   if (qForm) {
     qForm.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -162,7 +174,8 @@
           btn.disabled = true;
           btn.textContent = "Sending…";
         }
-        const res = await fetch(`${API_BASE}/api/queries`, {
+        const endpoint = `${API_BASE}/api/queries`;
+        const res = await fetch(endpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ name, email, device, message }),
